@@ -1,0 +1,120 @@
+{
+  "version": "v1.0.0",
+  "accuracy": 0,
+  "training_samples": 0,
+  "created_at": null,
+  "parameters": {},
+  "feature_names": [
+    "Bahasa (x1)",
+    "Motorik Halus (x2)",
+    "Motorik Kasar (x3)",
+    "Kognitif (x4)",
+    "Sosial-Emosional (x5)"
+  ],
+  "class_names": [
+    "Kinestetik",
+    "Linguistik",
+    "Perlu Stimulasi Lanjutan",
+    "Seni"
+  ],
+  "feature_importances": {
+    "Bahasa (x1)": 0.5055,
+    "Motorik Halus (x2)": 0.1466,
+    "Motorik Kasar (x3)": 0.241,
+    "Kognitif (x4)": 0.0,
+    "Sosial-Emosional (x5)": 0.1069
+  },
+  "tree_depth": 4,
+  "n_leaves": 6,
+  "tree": {
+    "type": "split",
+    "feature": "Bahasa (x1)",
+    "threshold": 2.5,
+    "left": {
+      "type": "split",
+      "feature": "Motorik Kasar (x3)",
+      "threshold": 2.5,
+      "left": {
+        "type": "split",
+        "feature": "Bahasa (x1)",
+        "threshold": 1.5,
+        "left": {
+          "type": "leaf",
+          "prediction": "Perlu Stimulasi Lanjutan",
+          "confidence": 100.0,
+          "distribution": {
+            "Kinestetik": 0.0,
+            "Linguistik": 0.0,
+            "Perlu Stimulasi Lanjutan": 1.0,
+            "Seni": 0.0
+          }
+        },
+        "right": {
+          "type": "split",
+          "feature": "Motorik Halus (x2)",
+          "threshold": 2.5,
+          "left": {
+            "type": "leaf",
+            "prediction": "Linguistik",
+            "confidence": 100.0,
+            "distribution": {
+              "Kinestetik": 0.0,
+              "Linguistik": 1.0,
+              "Perlu Stimulasi Lanjutan": 0.0,
+              "Seni": 0.0
+            }
+          },
+          "right": {
+            "type": "leaf",
+            "prediction": "Seni",
+            "confidence": 100.0,
+            "distribution": {
+              "Kinestetik": 0.0,
+              "Linguistik": 0.0,
+              "Perlu Stimulasi Lanjutan": 0.0,
+              "Seni": 1.0
+            }
+          }
+        }
+      },
+      "right": {
+        "type": "split",
+        "feature": "Sosial-Emosional (x5)",
+        "threshold": 1.5,
+        "left": {
+          "type": "leaf",
+          "prediction": "Perlu Stimulasi Lanjutan",
+          "confidence": 100.0,
+          "distribution": {
+            "Kinestetik": 0.0,
+            "Linguistik": 0.0,
+            "Perlu Stimulasi Lanjutan": 1.0,
+            "Seni": 0.0
+          }
+        },
+        "right": {
+          "type": "leaf",
+          "prediction": "Kinestetik",
+          "confidence": 100.0,
+          "distribution": {
+            "Kinestetik": 1.0,
+            "Linguistik": 0.0,
+            "Perlu Stimulasi Lanjutan": 0.0,
+            "Seni": 0.0
+          }
+        }
+      }
+    },
+    "right": {
+      "type": "leaf",
+      "prediction": "Linguistik",
+      "confidence": 100.0,
+      "distribution": {
+        "Kinestetik": 0.0,
+        "Linguistik": 1.0,
+        "Perlu Stimulasi Lanjutan": 0.0,
+        "Seni": 0.0
+      }
+    }
+  }
+}
