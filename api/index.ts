@@ -1,6 +1,8 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
 import app from '../src/app';
 import { bootstrap } from '../src/bootstrap';
+import 'pg';
+import 'pg-hstore';
 
 let initialized = false;
 
