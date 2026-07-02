@@ -75,6 +75,16 @@ describe('calculateAge', () => {
     expect(years).toBe(0);
     expect(months).toBe(0);
   });
+
+  it('accepts DATEONLY string from Sequelize', () => {
+    const birthDate = new Date();
+    birthDate.setFullYear(birthDate.getFullYear() - 5);
+    birthDate.setMonth(birthDate.getMonth() - 3);
+    const isoDate = birthDate.toISOString().slice(0, 10);
+    const { years, months } = calculateAge(isoDate);
+    expect(years).toBe(5);
+    expect(months).toBe(3);
+  });
 });
 
 // ─── likertToLabel ────────────────────────────────────────────────────────────

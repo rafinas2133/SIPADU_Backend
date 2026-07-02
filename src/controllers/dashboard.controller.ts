@@ -114,6 +114,7 @@ export class DashboardController {
         totalChildren,
         totalObservations,
         totalPredictions,
+        observedStudents,
         activeModel,
         modelHistory,
         recentLogs,
@@ -127,6 +128,7 @@ export class DashboardController {
         Child.count(),
         Observation.count({ where: { status: 'final' } }),
         Prediction.count(),
+        Prediction.count({ distinct: true, col: 'child_id' }),
         ModelHistory.findOne({ where: { is_active: true } }),
         ModelHistory.findAll({ order: [['created_at', 'DESC']], limit: 5 }),
         AuditLog.findAll({
@@ -157,10 +159,13 @@ export class DashboardController {
           total_orang_tua: totalOrangTua,
           total_classes: totalClasses,
           total_children: totalChildren,
+          total_students: totalChildren,
+          observed_students: observedStudents,
+          unobserved_students: totalChildren - observedStudents,
           total_observations: totalObservations,
           total_predictions: totalPredictions,
           observed_percentage: totalChildren > 0
-            ? Math.round((totalPredictions / totalChildren) * 100)
+            ? Math.round((observedStudents / totalChildren) * 100)
             : 0,
         },
         active_model: activeModel

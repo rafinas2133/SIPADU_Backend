@@ -112,15 +112,15 @@ INSERT INTO model_histories (id, version, accuracy, precision, recall, f1_score,
     120,
     '[[40,1,1,0],[2,27,1,0],[0,1,26,1],[0,0,2,18]]'::jsonb,
     '{"criterion":"gini","max_depth":3,"min_samples_leaf":2}'::jsonb,
-    'a0000000-0000-0000-0000-000000000001',
+    (SELECT id FROM users WHERE email = 'admin@sipadu.sch.id' LIMIT 1),
     TRUE
 )
 ON CONFLICT (version) DO NOTHING;
 
 -- ── Audit logs ────────────────────────────────────────────────────────────────
 INSERT INTO audit_logs (user_id, action, target_type, target_id, ip_address) VALUES
-('a0000000-0000-0000-0000-000000000002','CREATE_OBSERVATION','observation','d0000000-0000-0000-0000-000000000001','127.0.0.1'),
-('a0000000-0000-0000-0000-000000000002','CREATE_OBSERVATION','observation','d0000000-0000-0000-0000-000000000002','127.0.0.1'),
-('a0000000-0000-0000-0000-000000000001','RETRAIN_MODEL','model','e0000000-0000-0000-0000-000000000001','127.0.0.1');
+((SELECT id FROM users WHERE email = 'rina@sipadu.sch.id' LIMIT 1),'CREATE_OBSERVATION','observation','d0000000-0000-0000-0000-000000000001','127.0.0.1'),
+((SELECT id FROM users WHERE email = 'rina@sipadu.sch.id' LIMIT 1),'CREATE_OBSERVATION','observation','d0000000-0000-0000-0000-000000000002','127.0.0.1'),
+((SELECT id FROM users WHERE email = 'admin@sipadu.sch.id' LIMIT 1),'RETRAIN_MODEL','model','e0000000-0000-0000-0000-000000000001','127.0.0.1');
 
 SELECT 'Seed data berhasil dimuat!' AS status;

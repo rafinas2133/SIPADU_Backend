@@ -3,6 +3,7 @@ import { User } from '../models';
 import { logger } from './logger';
 
 const DEFAULT_ADMIN = {
+  id: 'a0000000-0000-0000-0000-000000000001',
   name: 'Administrator',
   email: 'admin@sipadu.sch.id',
   password: 'Admin@12345',
@@ -20,6 +21,7 @@ export async function seedAdmin(): Promise<void> {
   const password_hash = await bcrypt.hash(DEFAULT_ADMIN.password, 12);
 
   await User.create({
+    id: DEFAULT_ADMIN.id,
     name: DEFAULT_ADMIN.name,
     email: DEFAULT_ADMIN.email,
     password_hash,

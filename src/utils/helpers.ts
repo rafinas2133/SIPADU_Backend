@@ -61,19 +61,21 @@ export function buildDateRangeWhere(
 }
 
 /**
- * Kalkulasi usia dari tanggal lahir
+ * Kalkulasi usia dari tanggal lahir.
+ * Sequelize DATEONLY mengembalikan string (mis. "2020-03-12"), bukan Date.
  */
-export function calculateAge(birthDate: Date): { years: number; months: number } {
+export function calculateAge(birthDate: Date | string): { years: number; months: number } {
+  const date = birthDate instanceof Date ? birthDate : new Date(birthDate);
   const now = new Date();
-  let years = now.getFullYear() - birthDate.getFullYear();
-  let months = now.getMonth() - birthDate.getMonth();
+  let years = now.getFullYear() - date.getFullYear();
+  let months = now.getMonth() - date.getMonth();
 
   if (months < 0) {
     years--;
     months += 12;
   }
 
-  if (now.getDate() < birthDate.getDate()) {
+  if (now.getDate() < date.getDate()) {
     months--;
     if (months < 0) {
       years--;

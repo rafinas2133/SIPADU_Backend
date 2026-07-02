@@ -115,22 +115,39 @@ export class PredictionController {
   async getDistribution(req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
       const classId = req.query.class_id as string;
+      const childWhere: Record<string, unknown> = {};
 
-      // Ambil prediksi terbaru per anak
-      const latestPredictions = await Prediction.findAll({
-        attributes: [
-          'child_id',
-          'prediction',
-          [require('sequelize').fn('MAX', require('sequelize').col('Prediction.created_at')), 'latest_at'],
-        ],
-        include: classId
-          ? [{ model: Child, as: 'child', where: { class_id: classId }, attributes: [] }]
+      if (req.user?.role === 'guru') {
+        const classes = await Class.findAll({
+          where: { teacher_id: req.user.userId },
+          attributes: ['id'],
+        });
+        const classIds = classes.map((c) => c.id);
+        if (classId) {
+          childWhere.class_id = classIds.includes(classId) ? classId : { [Op.in]: [] };
+        } else {
+          childWhere.class_id = classIds.length > 0 ? { [Op.in]: classIds } : { [Op.in]: [] };
+        }
+      } else if (classId) {
+        childWhere.class_id = classId;
+      }
+
+      const hasChildFilter = Object.keys(childWhere).length > 0;
+
+      const predictions = await Prediction.findAll({
+        attributes: ['child_id', 'prediction', 'created_at'],
+        include: hasChildFilter
+          ? [{
+              model: Child,
+              as: 'child',
+              attributes: ['id'],
+              where: childWhere,
+              required: true,
+            }]
           : [],
-        group: ['child_id', 'prediction', 'child.id'],
-        raw: true,
+        order: [['created_at', 'DESC']],
       });
 
-      // Hitung distribusi
       const distribution: Record<string, number> = {
         Linguistik: 0,
         Seni: 0,
@@ -139,11 +156,10 @@ export class PredictionController {
       };
 
       const seen = new Set<string>();
-      for (const p of latestPredictions as Array<{ child_id: string; prediction: string }>) {
-        if (!seen.has(p.child_id)) {
-          seen.add(p.child_id);
-          distribution[p.prediction] = (distribution[p.prediction] || 0) + 1;
-        }
+      for (const p of predictions) {
+        if (seen.has(p.child_id)) continue;
+        seen.add(p.child_id);
+        distribution[p.prediction] = (distribution[p.prediction] || 0) + 1;
       }
 
       const total = Object.values(distribution).reduce((a, b) => a + b, 0);

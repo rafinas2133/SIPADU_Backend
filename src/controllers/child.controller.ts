@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
 import { Op } from 'sequelize';
 import { validationResult } from 'express-validator';
-import { Child, Class, User, Observation } from '../models';
+import { Child, Class, User, Observation, Prediction } from '../models';
 import { childService } from '../services/child.service';
 import { sendSuccess, sendCreated, sendError } from '../utils/response';
 import { calculateAge } from '../utils/helpers';
@@ -17,15 +17,21 @@ export class ChildController {
 
       const where: Record<string, unknown> = {};
       if (search) where.name = { [Op.iLike]: `%${search}%` };
-      if (classId) where.class_id = classId;
-
-      if (req.user?.role === 'guru') {
-        const classes = await Class.findAll({ where: { teacher_id: req.user.userId }, attributes: ['id'] });
-        where.class_id = { [Op.in]: classes.map((c) => c.id) };
-      }
 
       if (req.user?.role === 'orang_tua') {
         where.parent_user_id = req.user.userId;
+      }
+
+      if (req.user?.role === 'guru') {
+        const classes = await Class.findAll({ where: { teacher_id: req.user.userId }, attributes: ['id'] });
+        const classIds = classes.map((c) => c.id);
+        if (classId) {
+          where.class_id = classIds.includes(classId) ? classId : { [Op.in]: [] };
+        } else {
+          where.class_id = classIds.length > 0 ? { [Op.in]: classIds } : { [Op.in]: [] };
+        }
+      } else if (classId) {
+        where.class_id = classId;
       }
 
       const { count, rows } = await Child.findAndCountAll({
@@ -33,6 +39,19 @@ export class ChildController {
         include: [
           { model: Class, as: 'class', attributes: ['id', 'name'] },
           { model: User, as: 'parent', attributes: ['id', 'name', 'email'] },
+          {
+            model: Observation,
+            as: 'observations',
+            attributes: ['id', 'observation_date', 'status'],
+            separate: true,
+            limit: 1,
+            order: [['observation_date', 'DESC']],
+            include: [{
+              model: Prediction,
+              as: 'prediction',
+              attributes: ['id', 'prediction', 'confidence', 'model_version'],
+            }],
+          },
         ],
         limit,
         offset,

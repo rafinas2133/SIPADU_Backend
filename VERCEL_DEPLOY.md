@@ -20,13 +20,22 @@ Model ML (`cart_model_bakat_anak.pkl`) sudah di-export ke `backend/src/model/mod
 
 1. Buat project di [neon.tech](https://neon.tech)
 2. Copy **pooled connection string** (hostname berakhiran `-pooler`)
-3. Jalankan migrations di SQL Editor Neon:
+3. Jalankan migrations ke Neon:
 
-```sql
--- Salin isi file berurutan:
--- backend/migrations/001_init_schema.sql
--- (002_seed_demo.sql opsional, untuk data demo)
+```bash
+cd backend
+node scripts/migrate-to-neon.js          # schema saja
+node scripts/migrate-to-neon.js --seed   # schema + data demo
 ```
+
+**Migrasi data dari PostgreSQL lokal:**
+
+```powershell
+# Edit kredensial lokal di script jika perlu, lalu:
+.\scripts\migrate-local-to-neon.ps1 -LocalPassword "password_anda"
+```
+
+Atau manual via SQL Editor Neon — salin isi `backend/migrations/001_init_schema.sql`.
 
 ---
 
