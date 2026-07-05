@@ -13,7 +13,7 @@ CREATE TABLE IF NOT EXISTS users (
     name                VARCHAR(100)  NOT NULL,
     email               VARCHAR(150)  NOT NULL UNIQUE,
     password_hash       VARCHAR(255)  NOT NULL,
-    role                VARCHAR(20)   NOT NULL CHECK (role IN ('admin','guru','orang_tua')),
+    role                VARCHAR(20)   NOT NULL CHECK (role IN ('admin','guru')),
     refresh_token       TEXT,
     reset_token         VARCHAR(255),
     reset_token_expires TIMESTAMPTZ,
@@ -48,7 +48,7 @@ CREATE TABLE IF NOT EXISTS children (
     birth_date     DATE         NOT NULL,
     gender         CHAR(1)      NOT NULL CHECK (gender IN ('L','P')),
     class_id       UUID         NOT NULL REFERENCES classes(id) ON DELETE RESTRICT,
-    parent_user_id UUID         REFERENCES users(id) ON DELETE SET NULL,
+    parent_phone   VARCHAR(20),
     photo_path     VARCHAR(255),
     notes          TEXT,
     created_at     TIMESTAMPTZ  NOT NULL DEFAULT NOW(),
@@ -56,7 +56,6 @@ CREATE TABLE IF NOT EXISTS children (
 );
 
 CREATE INDEX IF NOT EXISTS idx_children_class    ON children(class_id);
-CREATE INDEX IF NOT EXISTS idx_children_parent   ON children(parent_user_id);
 CREATE INDEX IF NOT EXISTS idx_children_name_trgm ON children USING GIN (name gin_trgm_ops);
 
 -- ── Observations ──────────────────────────────────────────────────────────────

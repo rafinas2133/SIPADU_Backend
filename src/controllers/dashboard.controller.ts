@@ -109,7 +109,6 @@ export class DashboardController {
       const [
         totalUsers,
         totalGuru,
-        totalOrangTua,
         totalClasses,
         totalChildren,
         totalObservations,
@@ -123,7 +122,6 @@ export class DashboardController {
       ] = await Promise.all([
         User.count({ where: { is_active: true } }),
         User.count({ where: { role: 'guru', is_active: true } }),
-        User.count({ where: { role: 'orang_tua', is_active: true } }),
         Class.count(),
         Child.count(),
         Observation.count({ where: { status: 'final' } }),
@@ -156,7 +154,6 @@ export class DashboardController {
         overview: {
           total_users: totalUsers,
           total_guru: totalGuru,
-          total_orang_tua: totalOrangTua,
           total_classes: totalClasses,
           total_children: totalChildren,
           total_students: totalChildren,
@@ -182,52 +179,6 @@ export class DashboardController {
         talent_distribution: talentDist,
         users_by_role: usersByRole,
         recent_activity: recentLogs,
-      });
-    } catch (err) {
-      next(err);
-    }
-  }
-
-  /**
-   * GET /dashboard/parent
-   * Statistik untuk orang tua — hanya anak mereka sendiri
-   */
-  async getParentStats(req: Request, res: Response, next: NextFunction): Promise<void> {
-    try {
-      const parentId = req.user!.userId;
-
-      const children = await Child.findAll({
-        where: { parent_user_id: parentId },
-        include: [
-          { model: Class, as: 'class', attributes: ['id', 'name'] },
-          {
-            model: Observation,
-            as: 'observations',
-            limit: 1,
-            order: [['observation_date', 'DESC']],
-            include: [{ model: Prediction, as: 'prediction' }],
-          },
-        ],
-      });
-
-      sendSuccess(res, {
-        children: children.map((child) => {
-          const c = child as Child & {
-            class?: Class;
-            observations?: (Observation & { prediction?: Prediction })[];
-          };
-          const latestObs = c.observations?.[0];
-          const latestPred = latestObs?.prediction;
-          return {
-            id: c.id,
-            name: c.name,
-            nis: c.nis,
-            class: c.class,
-            latest_prediction: latestPred?.prediction || null,
-            latest_confidence: latestPred?.confidence || null,
-            last_observed: latestObs?.observation_date || null,
-          };
-        }),
       });
     } catch (err) {
       next(err);

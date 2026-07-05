@@ -8,6 +8,5 @@ router.use(authenticate);
 
 router.get('/guru', authorize('admin', 'guru'), dashboardController.getGuruStats.bind(dashboardController));
 router.get('/admin', authorize('admin'), dashboardController.getAdminStats.bind(dashboardController));
-router.get('/parent', authorize('orang_tua', 'admin'), dashboardController.getParentStats.bind(dashboardController));
 
 export default router;

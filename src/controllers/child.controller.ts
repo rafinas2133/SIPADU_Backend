@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
 import { Op } from 'sequelize';
 import { validationResult } from 'express-validator';
-import { Child, Class, User, Observation, Prediction } from '../models';
+import { Child, Class, Observation, Prediction } from '../models';
 import { childService } from '../services/child.service';
 import { sendSuccess, sendCreated, sendError } from '../utils/response';
 import { calculateAge } from '../utils/helpers';
@@ -17,10 +17,6 @@ export class ChildController {
 
       const where: Record<string, unknown> = {};
       if (search) where.name = { [Op.iLike]: `%${search}%` };
-
-      if (req.user?.role === 'orang_tua') {
-        where.parent_user_id = req.user.userId;
-      }
 
       if (req.user?.role === 'guru') {
         const classes = await Class.findAll({ where: { teacher_id: req.user.userId }, attributes: ['id'] });
@@ -38,7 +34,6 @@ export class ChildController {
         where,
         include: [
           { model: Class, as: 'class', attributes: ['id', 'name'] },
-          { model: User, as: 'parent', attributes: ['id', 'name', 'email'] },
           {
             model: Observation,
             as: 'observations',
@@ -99,7 +94,7 @@ export class ChildController {
         return;
       }
 
-      const { name, nis, birth_date, gender, class_id, parent_user_id, notes } = req.body;
+      const { name, nis, birth_date, gender, class_id, parent_phone, notes } = req.body;
 
       const kelas = await Class.findByPk(class_id);
       if (!kelas) {
@@ -114,7 +109,7 @@ export class ChildController {
       }
 
       const child = await Child.create({
-        name, nis, birth_date, gender, class_id, parent_user_id, notes,
+        name, nis, birth_date, gender, class_id, parent_phone, notes,
       });
 
       const result = await Child.findByPk(child.id, {
@@ -135,7 +130,7 @@ export class ChildController {
         return;
       }
 
-      const { name, nis, birth_date, gender, class_id, parent_user_id, notes } = req.body;
+      const { name, nis, birth_date, gender, class_id, parent_phone, notes } = req.body;
 
       await child.update({
         ...(name && { name }),
@@ -143,7 +138,7 @@ export class ChildController {
         ...(birth_date && { birth_date }),
         ...(gender && { gender }),
         ...(class_id && { class_id }),
-        ...(parent_user_id !== undefined && { parent_user_id }),
+        ...(parent_phone !== undefined && { parent_phone }),
         ...(notes !== undefined && { notes }),
       });
 

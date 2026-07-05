@@ -54,7 +54,7 @@ User.init(
       allowNull: false,
     },
     role: {
-      type: DataTypes.ENUM('admin', 'guru', 'orang_tua'),
+      type: DataTypes.ENUM('admin', 'guru'),
       allowNull: false,
       defaultValue: 'guru',
     },

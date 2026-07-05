@@ -8,8 +8,8 @@ const router = Router();
 
 router.use(authenticate);
 
-router.get('/', authorize('admin', 'guru', 'orang_tua'), childController.getAll.bind(childController));
-router.get('/:id', authorize('admin', 'guru', 'orang_tua'), childController.getById.bind(childController));
+router.get('/', authorize('admin', 'guru'), childController.getAll.bind(childController));
+router.get('/:id', authorize('admin', 'guru'), childController.getById.bind(childController));
 router.post('/', authorize('admin', 'guru'), createChildValidator, validate, childController.create.bind(childController));
 router.put('/:id', authorize('admin', 'guru'), childController.update.bind(childController));
 router.delete('/:id', authorize('admin'), childController.delete.bind(childController));

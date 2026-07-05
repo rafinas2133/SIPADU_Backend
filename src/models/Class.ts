@@ -49,7 +49,7 @@ interface ChildAttributes {
   birth_date: Date;
   gender: 'L' | 'P';
   class_id: string;
-  parent_user_id?: string | null;
+  parent_phone?: string | null;
   photo_path?: string | null;
   notes?: string | null;
   created_at?: Date;
@@ -58,7 +58,7 @@ interface ChildAttributes {
 
 type ChildCreationAttributes = Optional<
   ChildAttributes,
-  'id' | 'parent_user_id' | 'photo_path' | 'notes'
+  'id' | 'parent_phone' | 'photo_path' | 'notes'
 >;
 
 export class Child extends Model<ChildAttributes, ChildCreationAttributes> implements ChildAttributes {
@@ -68,7 +68,7 @@ export class Child extends Model<ChildAttributes, ChildCreationAttributes> imple
   declare birth_date: Date;
   declare gender: 'L' | 'P';
   declare class_id: string;
-  declare parent_user_id: string | null;
+  declare parent_phone: string | null;
   declare photo_path: string | null;
   declare notes: string | null;
   declare created_at: Date;
@@ -83,7 +83,7 @@ Child.init(
     birth_date: { type: DataTypes.DATEONLY, allowNull: false },
     gender: { type: DataTypes.ENUM('L', 'P'), allowNull: false },
     class_id: { type: DataTypes.UUID, allowNull: false, references: { model: 'classes', key: 'id' } },
-    parent_user_id: { type: DataTypes.UUID, allowNull: true, references: { model: 'users', key: 'id' } },
+    parent_phone: { type: DataTypes.STRING(20), allowNull: true },
     photo_path: { type: DataTypes.STRING(255), allowNull: true },
     notes: { type: DataTypes.TEXT, allowNull: true },
   },
@@ -92,5 +92,3 @@ Child.init(
 
 Child.belongsTo(Class, { foreignKey: 'class_id', as: 'class' });
 Class.hasMany(Child, { foreignKey: 'class_id', as: 'children' });
-Child.belongsTo(User, { foreignKey: 'parent_user_id', as: 'parent' });
-User.hasMany(Child, { foreignKey: 'parent_user_id', as: 'children' });

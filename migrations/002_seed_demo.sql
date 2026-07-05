@@ -29,20 +29,6 @@ INSERT INTO users (id, name, email, password_hash, role) VALUES
     'dian@sipadu.sch.id',
     '$2a$12$YKDi8InkHQ3vVxp5a7DcT.fVAXRHoR6OWnqGX0Iw3qFKsT7nExlpS',
     'guru'
-),
-(
-    'a0000000-0000-0000-0000-000000000004',
-    'Pak Ahmad Pratama',
-    'ahmad@gmail.com',
-    '$2a$12$YKDi8InkHQ3vVxp5a7DcT.fVAXRHoR6OWnqGX0Iw3qFKsT7nExlpS',
-    'orang_tua'
-),
-(
-    'a0000000-0000-0000-0000-000000000005',
-    'Ibu Sri Wahyuni',
-    'sri@gmail.com',
-    '$2a$12$YKDi8InkHQ3vVxp5a7DcT.fVAXRHoR6OWnqGX0Iw3qFKsT7nExlpS',
-    'orang_tua'
 )
 ON CONFLICT (email) DO NOTHING;
 
@@ -65,9 +51,9 @@ INSERT INTO classes (id, name, teacher_id, academic_year, description) VALUES
 ON CONFLICT (name, academic_year) DO NOTHING;
 
 -- ── Children ──────────────────────────────────────────────────────────────────
-INSERT INTO children (id, nis, name, birth_date, gender, class_id, parent_user_id) VALUES
-('c0000000-0000-0000-0000-000000000001','20240001','Arya Pratama',   '2020-03-12','L','b0000000-0000-0000-0000-000000000001','a0000000-0000-0000-0000-000000000004'),
-('c0000000-0000-0000-0000-000000000002','20240002','Seli Amara',     '2020-07-22','P','b0000000-0000-0000-0000-000000000001','a0000000-0000-0000-0000-000000000005'),
+INSERT INTO children (id, nis, name, birth_date, gender, class_id, parent_phone) VALUES
+('c0000000-0000-0000-0000-000000000001','20240001','Arya Pratama',   '2020-03-12','L','b0000000-0000-0000-0000-000000000001', NULL),
+('c0000000-0000-0000-0000-000000000002','20240002','Seli Amara',     '2020-07-22','P','b0000000-0000-0000-0000-000000000001', NULL),
 ('c0000000-0000-0000-0000-000000000003','20240003','Budi Santoso',   '2020-01-05','L','b0000000-0000-0000-0000-000000000002', NULL),
 ('c0000000-0000-0000-0000-000000000004','20240004','Nia Rahmawati',  '2020-09-14','P','b0000000-0000-0000-0000-000000000001', NULL),
 ('c0000000-0000-0000-0000-000000000005','20240005','Dedi Kurniawan', '2020-05-30','L','b0000000-0000-0000-0000-000000000002', NULL),

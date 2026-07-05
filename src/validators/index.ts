@@ -36,15 +36,15 @@ export const createUserValidator = [
     .isLength({ min: 8 })
     .withMessage('Password minimal 8 karakter'),
   body('role')
-    .isIn(['admin', 'guru', 'orang_tua'])
-    .withMessage('Role harus admin, guru, atau orang_tua'),
+    .isIn(['admin', 'guru'])
+    .withMessage('Role harus admin atau guru'),
 ];
 
 export const updateUserValidator = [
   param('id').isUUID().withMessage('ID user tidak valid'),
   body('name').optional().trim().notEmpty(),
   body('email').optional().isEmail(),
-  body('role').optional().isIn(['admin', 'guru', 'orang_tua']),
+  body('role').optional().isIn(['admin', 'guru']),
 ];
 
 export const createClassValidator = [
@@ -59,7 +59,7 @@ export const createChildValidator = [
   body('birth_date').isISO8601().withMessage('Format tanggal lahir tidak valid'),
   body('gender').isIn(['L', 'P']).withMessage('Jenis kelamin harus L atau P'),
   body('class_id').isUUID().withMessage('ID kelas tidak valid'),
-  body('parent_user_id').optional().isUUID(),
+  body('parent_phone').optional().isString(),
 ];
 
 export const createObservationValidator = [

@@ -1,6 +1,6 @@
 import { Request } from 'express';
 
-export type UserRole = 'admin' | 'guru' | 'orang_tua';
+export type UserRole = 'admin' | 'guru';
 
 export type TalentCategory = 'Linguistik' | 'Seni' | 'Kinestetik' | 'Butuh Stimulasi';
 

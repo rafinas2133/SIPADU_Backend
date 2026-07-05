@@ -18,8 +18,8 @@ export const reportRouter = Router();
 
 reportRouter.use(authenticate);
 
-reportRouter.get('/child/:id', authorize('admin', 'guru', 'orang_tua'), reportController.getChildReport.bind(reportController));
-reportRouter.get('/buku/:childId/html', authorize('admin', 'guru', 'orang_tua'), reportController.getBukuHtml.bind(reportController));
-reportRouter.get('/buku/:childId/data', authorize('admin', 'guru', 'orang_tua'), reportController.getBukuData.bind(reportController));
+reportRouter.get('/child/:id', authorize('admin', 'guru'), reportController.getChildReport.bind(reportController));
+reportRouter.get('/buku/:childId/html', authorize('admin', 'guru'), reportController.getBukuHtml.bind(reportController));
+reportRouter.get('/buku/:childId/data', authorize('admin', 'guru'), reportController.getBukuData.bind(reportController));
 reportRouter.get('/export', authorize('admin', 'guru'), reportController.exportData.bind(reportController));
 reportRouter.get('/recommendations/:category', reportController.getRecommendations.bind(reportController));
