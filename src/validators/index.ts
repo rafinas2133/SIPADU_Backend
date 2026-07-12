@@ -1,5 +1,8 @@
 import { body, param, query } from 'express-validator';
 
+// PostgreSQL menerima UUID non-RFC4122 (mis. ID seed demo), berbeda dari validator isUUID().
+const UUID_PATTERN = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+
 const likertScore = (field: string, label: string) =>
   body(field)
     .isInt({ min: 1, max: 4 })
@@ -41,7 +44,7 @@ export const createUserValidator = [
 ];
 
 export const updateUserValidator = [
-  param('id').isUUID().withMessage('ID user tidak valid'),
+  param('id').matches(UUID_PATTERN).withMessage('ID user tidak valid'),
   body('name').optional().trim().notEmpty(),
   body('email').optional().isEmail(),
   body('role').optional().isIn(['admin', 'guru']),
@@ -49,7 +52,7 @@ export const updateUserValidator = [
 
 export const createClassValidator = [
   body('name').trim().notEmpty().withMessage('Nama kelas wajib diisi'),
-  body('teacher_id').isUUID().withMessage('ID guru tidak valid'),
+  body('teacher_id').matches(UUID_PATTERN).withMessage('ID guru tidak valid'),
   body('academic_year').optional().trim(),
 ];
 
@@ -58,12 +61,12 @@ export const createChildValidator = [
   body('nis').trim().notEmpty().withMessage('NIS wajib diisi'),
   body('birth_date').isISO8601().withMessage('Format tanggal lahir tidak valid'),
   body('gender').isIn(['L', 'P']).withMessage('Jenis kelamin harus L atau P'),
-  body('class_id').isUUID().withMessage('ID kelas tidak valid'),
+  body('class_id').matches(UUID_PATTERN).withMessage('ID kelas tidak valid'),
   body('parent_phone').optional().isString(),
 ];
 
 export const createObservationValidator = [
-  body('child_id').isUUID().withMessage('ID siswa tidak valid'),
+  body('child_id').matches(UUID_PATTERN).withMessage('ID siswa tidak valid'),
   body('observation_date').isISO8601().withMessage('Format tanggal observasi tidak valid'),
   likertScore('bahasa', 'Bahasa'),
   likertScore('motorik_halus', 'Motorik Halus'),
@@ -79,7 +82,7 @@ export const retrainValidator = [
 ];
 
 export const uuidParam = (name: string) =>
-  param(name).isUUID().withMessage(`${name} tidak valid`);
+  param(name).matches(UUID_PATTERN).withMessage(`${name} tidak valid`);
 
 export const paginationQuery = [
   query('page').optional().isInt({ min: 1 }),
